@@ -50,6 +50,11 @@ func Init(cfg Config) *slog.Logger {
 	return logger
 }
 
+// ParseLevel 将日志级别名称解析为 slog.Level，无法识别时默认 INFO。
+func ParseLevel(level string) slog.Level {
+	return parseLevel(level)
+}
+
 func parseLevel(level string) slog.Level {
 	switch strings.ToLower(strings.TrimSpace(level)) {
 	case "debug":

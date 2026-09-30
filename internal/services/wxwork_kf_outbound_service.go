@@ -269,11 +269,37 @@ func (s *wxWorkKFOutboundService) sendTextMessage(channel *models.Channel, mappi
 
 	resp, err := cli.SendMsg(req)
 	if err != nil {
+		slog.Error("wxwork text message send failed",
+			"conversation_id", message.ConversationID,
+			"message_id", message.ID,
+			"chunk_index", chunkIndex,
+			"client_msg_id", req.Message.MsgID,
+			"open_kfid", req.Message.OpenKFID,
+			"external_userid", req.Message.ToUser,
+			"error", err,
+		)
 		return "", err
 	}
 	if strings.TrimSpace(resp.MsgID) == "" {
+		slog.Error("wxwork text message send returned empty msgid",
+			"conversation_id", message.ConversationID,
+			"message_id", message.ID,
+			"chunk_index", chunkIndex,
+			"client_msg_id", req.Message.MsgID,
+			"errcode", resp.ErrCode,
+			"errmsg", resp.ErrMsg,
+		)
 		return "", i18nx.Errorf("error.e0114")
 	}
+	slog.Debug("wxwork text message response detail",
+		"conversation_id", message.ConversationID,
+		"message_id", message.ID,
+		"chunk_index", chunkIndex,
+		"client_msg_id", req.Message.MsgID,
+		"wx_msg_id", strings.TrimSpace(resp.MsgID),
+		"errcode", resp.ErrCode,
+		"errmsg", resp.ErrMsg,
+	)
 	slog.Info("wxwork text message accepted",
 		"conversation_id", message.ConversationID,
 		"message_id", message.ID,
@@ -345,9 +371,28 @@ func (s *wxWorkKFOutboundService) sendImageMessage(channel *models.Channel, mapp
 
 	resp, err := kfCli.SendMsg(req)
 	if err != nil {
+		slog.Error("wxwork image message send failed",
+			"conversation_id", message.ConversationID,
+			"message_id", message.ID,
+			"chunk_index", chunkIndex,
+			"client_msg_id", req.Message.MsgID,
+			"open_kfid", req.Message.OpenKFID,
+			"external_userid", req.Message.ToUser,
+			"media_id", req.Image.MediaID,
+			"error", err,
+		)
 		return "", err
 	}
 	if strings.TrimSpace(resp.MsgID) == "" {
+		slog.Error("wxwork image message send returned empty msgid",
+			"conversation_id", message.ConversationID,
+			"message_id", message.ID,
+			"chunk_index", chunkIndex,
+			"client_msg_id", req.Message.MsgID,
+			"media_id", req.Image.MediaID,
+			"errcode", resp.ErrCode,
+			"errmsg", resp.ErrMsg,
+		)
 		return "", i18nx.Errorf("error.e0114")
 	}
 	slog.Info("wxwork image message accepted",

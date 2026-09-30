@@ -411,6 +411,7 @@ type Conversation struct {
 	ClosedAt            *time.Time                      `gorm:"index"`                                       // ClosedAt 为会话关闭时间。
 	ClosedBy            int64                           `gorm:"type:bigint;not null;default:0;index"`        // ClosedBy 为关闭人用户ID，访客关闭时写0。
 	CloseReason         string                          `gorm:"type:varchar(255);not null;default:''"`       // CloseReason 为关闭原因。
+	IdleReminderSentAt  *time.Time                      `gorm:"index"`                                       // IdleReminderSentAt 为超时提醒发送时间。
 	AuditFields
 }
 

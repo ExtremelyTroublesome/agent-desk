@@ -294,6 +294,12 @@ export const dashboardNavSections: DashboardNavSectionConfig[] = [
         icon: <ScrollTextIcon />,
         requiredPermission: "systemLog.view",
       },
+      {
+        titleKey: "nav.systemSettings",
+        url: "/dashboard/settings",
+        icon: <SettingsIcon />,
+        requiredPermission: "systemConfig.view",
+      },
     ],
   },
 ];

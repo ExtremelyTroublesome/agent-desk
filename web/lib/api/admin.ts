@@ -2467,6 +2467,24 @@ export function fetchSupportConfigAdmin() {
   return request<DashboardSupportConfig>("/api/dashboard/support/config")
 }
 
+// SystemConfig 为运营侧系统配置。
+export type SystemConfig = {
+  logLevel: string
+  conversationIdleTimeout: number
+  conversationIdleReminderMessage: string
+}
+
+export function fetchSystemConfig() {
+  return request<SystemConfig>("/api/dashboard/system/config")
+}
+
+export function saveSystemConfig(logLevel: string, conversationIdleTimeout: number, conversationIdleReminderMessage: string) {
+  return request<SystemConfig>("/api/dashboard/system/config/save", {
+    method: "POST",
+    body: JSON.stringify({ logLevel, conversationIdleTimeout, conversationIdleReminderMessage }),
+  })
+}
+
 export type SystemLog = {
   id: number
   level: string

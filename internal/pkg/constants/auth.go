@@ -176,6 +176,8 @@ var (
 	PermissionCommunityUpdate     = Permission{Name: "管理支持中心社区", Code: "supportCommunity.update", Type: "api", GroupName: "supportCommunity", Method: "POST", APIPath: "/api/dashboard/support-community/posts/moderate", SortNo: 1595}
 	PermissionSupportConfigView   = Permission{Name: "查看支持中心配置", Code: "supportConfig.view", Type: "api", GroupName: "supportConfig", Method: "GET", APIPath: "/api/dashboard/support/config", SortNo: 1596}
 	PermissionSupportConfigUpdate = Permission{Name: "更新支持中心配置", Code: "supportConfig.update", Type: "api", GroupName: "supportConfig", Method: "POST", APIPath: "/api/dashboard/support/config/save", SortNo: 1597}
+	PermissionSystemConfigView    = Permission{Name: "查看系统配置", Code: "systemConfig.view", Type: "api", GroupName: "systemConfig", Method: "GET", APIPath: "/api/dashboard/system/config", SortNo: 1820}
+	PermissionSystemConfigUpdate  = Permission{Name: "更新系统配置", Code: "systemConfig.update", Type: "api", GroupName: "systemConfig", Method: "POST", APIPath: "/api/dashboard/system/config/save", SortNo: 1821}
 
 	// Skill 定义相关权限
 	PermissionSkillDefinitionView   = Permission{Name: "查看技能定义", Code: "skillDefinition.view", Type: "api", GroupName: "skillDefinition", Method: "ANY", APIPath: "/api/dashboard/skill-definition/list", SortNo: 1610}
@@ -299,6 +301,8 @@ var Permissions = []Permission{
 	PermissionMCPView,
 	PermissionMCPCall,
 	PermissionSystemLogView,
+	PermissionSystemConfigView,
+	PermissionSystemConfigUpdate,
 }
 
 // PermissionMap 权限映射，用于通过 Code 查找 Permission
@@ -450,6 +454,8 @@ var RolePermissions = map[string][]Permission{
 		PermissionAIConfigView, PermissionAIConfigCreate, PermissionAIConfigUpdate, PermissionAIConfigDelete,
 		PermissionSkillDefinitionView, PermissionSkillDefinitionCreate, PermissionSkillDefinitionUpdate, PermissionSkillDefinitionDelete,
 		PermissionSystemLogView,
+		PermissionSystemConfigView,
+		PermissionSystemConfigUpdate,
 	},
 	RoleCodeCsTeamLeader: {
 		PermissionUserView,

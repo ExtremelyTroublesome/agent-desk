@@ -22,6 +22,19 @@ const (
 	dbSinkFlushInterval   = 1 * time.Second
 )
 
+// dbLevel 为写入数据库的最低日志级别，默认 WARN。
+// 可通过 SetDBLevel 在运行时调整（例如排查问题时临时降到 INFO）。
+var dbLevel atomic.Int64
+
+func init() {
+	dbLevel.Store(int64(slog.LevelWarn))
+}
+
+// SetDBLevel 设置写入数据库的最低日志级别，运行时立即生效。
+func SetDBLevel(level slog.Level) {
+	dbLevel.Store(int64(level))
+}
+
 // dbSink 包装底层 stdout handler，并将 WARN/ERROR 级别日志异步写入数据库。
 type dbSink struct {
 	inner slog.Handler
@@ -79,8 +92,8 @@ func (h *dbSink) Handle(ctx context.Context, r slog.Record) error {
 		return err
 	}
 
-	// 只持久化 WARN 及以上级别（DEBUG/INFO 不写库）
-	if r.Level < slog.LevelWarn {
+	// 是否持久化由可动态调整的 dbLevel 决定（默认仅 WARN 及以上写库）。
+	if r.Level < slog.Level(dbLevel.Load()) {
 		return nil
 	}
 

@@ -109,7 +109,7 @@ func (s *channelMessageOutboxService) EnqueueWxWorkKFMessage(conversation *model
 	}
 
 	now := time.Now()
-	return s.Create(&models.ChannelMessageOutbox{
+	err = s.Create(&models.ChannelMessageOutbox{
 		ChannelType:    enums.ChannelTypeWxWorkKF,
 		ConversationID: conversation.ID,
 		MessageID:      message.ID,
@@ -124,6 +124,20 @@ func (s *channelMessageOutboxService) EnqueueWxWorkKFMessage(conversation *model
 			UpdateUserName: message.UpdateUserName,
 		},
 	})
+	if err != nil {
+		return err
+	}
+
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				slog.Error("recovered from panic in wxwork kf outbound dispatch", "error", r)
+			}
+		}()
+		WxWorkKFOutboundService.DispatchPendingOutbox()
+	}()
+
+	return nil
 }
 
 func (s *channelMessageOutboxService) EnqueueTelegramMessage(conversation *models.Conversation, message *models.Message) error {
@@ -329,10 +343,6 @@ func (s *channelMessageOutboxService) ListPending(channelType string, limit int)
 			string(enums.ChannelMessageOutboxStatusPending), now,
 			string(enums.ChannelMessageOutboxStatusFailed), now,
 		).
-		// Only rows whose backoff has elapsed are eligible; ordering by
-		// next_retry_at keeps a backlog of not-yet-due retries from starving
-		// newer pending sends.
-		Lte("next_retry_at", now).
 		Asc("next_retry_at").
 		Asc("id").
 		Limit(limit)

@@ -155,7 +155,7 @@ func requestLogMiddleware() gin.HandlerFunc {
 		requestID, _ := ctx.Get(tracex.GinRequestIDKey)
 		ctx.Next()
 
-		slog.Info("http request",
+		slog.Debug("http request",
 			"requestId", requestID,
 			"method", method,
 			"path", path,
@@ -233,6 +233,7 @@ func addRouter(app *gin.Engine) {
 	registerDashboardKnowledgeRetrieveRoutes(dashboardGroup.Group("/knowledge-retrieve"))
 	registerDashboardKnowledgeRetrieveLogRoutes(dashboardGroup.Group("/knowledge-retrieve-log"))
 	registerDashboardSupportConfigRoutes(dashboardGroup.Group("/support/config"))
+	registerDashboardSystemConfigRoutes(dashboardGroup.Group("/system/config"))
 	registerDashboardDocPageRoutes(dashboardGroup.Group("/doc-page"))
 	registerDashboardCommunityCategoryRoutes(dashboardGroup.Group("/support-community/categories"))
 	registerDashboardCommunityPostRoutes(dashboardGroup.Group("/support-community/posts"))

@@ -46,6 +46,21 @@ func Init() {
 		}
 	})
 
+	// 每 1 分钟检查并发送超时提醒、关闭超时会话。
+	addFunc(c, "@every 1m", func() {
+		timeoutMinutes := services.SystemConfigService.ConversationIdleTimeout()
+		idleTimeout := time.Duration(timeoutMinutes) * time.Minute
+		reminderMsg := services.SystemConfigService.ConversationIdleReminderMessage()
+		reminded := services.ConversationService.SendIdleReminders(idleTimeout, 3*time.Minute, reminderMsg)
+		if reminded > 0 {
+			slog.Info("sent idle reminders", "sent_count", reminded)
+		}
+		closed := services.ConversationService.AutoCloseStaleConversations(idleTimeout)
+		if closed > 0 {
+			slog.Info("auto closed stale conversations", "closed_count", closed, "idle_timeout_min", timeoutMinutes)
+		}
+	})
+
 	// 每天凌晨 3 点清理一个月以前的系统日志。
 	addFunc(c, "0 3 * * *", func() {
 		before := time.Now().AddDate(0, -1, 0)
